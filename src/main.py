@@ -238,8 +238,8 @@ def my_code():
     sprites = pygame.sprite.Group()
 
 
-    brick = Brick(RED)
-    brick.create(GREEN)
+    #brick = Brick(RED)
+    #brick.create(GREEN)
 
     paddle = Paddle(WHITE, 60, 20)
     paddle.rect.x = 350
@@ -251,6 +251,29 @@ def my_code():
 
     clock = pygame.time.Clock()
     
+    initial_open = True
+
+    while initial_open:
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                initial_open = False
+                playing = False
+
+        # Display some sort of waiting start screen
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            initial_open = False
+            
+        
+        screen.fill((0,0,0))
+        
+        font = pygame.font.Font(None, 72)
+        text = font.render("Press Space to start!", 1, WHITE)
+        screen.blit(text, (150, 300))
+
+        pygame.display.flip()
+        clock.tick(60)
+
     while playing:
         # Event handling
         for event in pygame.event.get():
@@ -288,8 +311,9 @@ def my_code():
 
 
         # Denne koden styrer paddelen med musa
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        pygame.draw.rect(screen, (255, 255, 255), ((mouse_x - 30, 480 - 24), (60, 20)))
+        #mouse_x, mouse_y = pygame.mouse.get_pos()
+        #pygame.draw.rect(screen, (255, 255, 255), ((mouse_x - 30, 480 - 24), (60, 20)))
+
         # Mens den andre koden styrer paddelen med høyre/venstre piltast
 
 
