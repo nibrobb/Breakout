@@ -30,7 +30,6 @@ import pygame
 from pygame import Vector2
 from pygame.draw import rect
 
-
 def intersect_rectangle_circle(rec_pos, sx, sy,
                                circle_pos, circle_radius, circle_speed):
     """ Determine if a rectangle and a circle intersects.
@@ -125,7 +124,7 @@ def example_code():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exit()
+                os.sys.exit()
 
         pygame.draw.rect(screen, (0, 0, 0), ((0, 0), screen_res))
         clock.tick(30)
@@ -191,6 +190,7 @@ def example_code():
 
 
 def example2():
+    """This is a docstring"""
     V1 = Vector2(300, 300)
     V2 = Vector2(100, 100)
 
@@ -198,48 +198,94 @@ def example2():
 
     print(V3)
 
-
-        
-
-def my_code():
-    screen_res = (640, 480)
-    pygame.init()
-
-    
-    screen = pygame.display.set_mode(screen_res)
-    clock = pygame.time.Clock()
-
+class Brick:
+    """ The Brick class, a class that defines bricks """
     tile_width = 60
     tile_height = 20
-    tile_colors = [(102, 51, 153), (255, 0, 0), (0, 255, 0)]
+    def __init__(self, color):
+        self.color = color
+    
+    def create(self, color):
+        pass
 
-    n_tiles = screen_res[0]//tile_width
-    margin = screen_res[0] - (n_tiles * tile_width + (n_tiles * 2))
-    num = 2
+    def destroy(self):
+        pass # Brick is kill
 
-    while True:
+BLACK = (0,0,0)
+class Paddle(pygame.sprite.Sprite):
+    """ Dette er klassen for 'rekkerten' """
+
+    def __init__(self, color, width, height):
+        super().__init__()
+
+        self.image = pygame.Surface([width, height])
+        self.image.fill(BLACK)
+        self.image.set_colorkey(BLACK)
+
+        pygame.draw.rect(self.image, color, [0, 0, width, height])
+
+        self.rect = self.image.get_rect()
+
+def my_code():
+    """This is a docstring"""
+
+    pygame.init()
+
+    # Defining some beatuiful colors
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    BLUE = (0, 0, 255)
+    REBECCAPURPLE = (102, 51, 153)
+    WHITE = (255, 255, 255)
+
+    score = 0
+    lives = 3
+
+    # Setting up the game window
+    screen_res = (800, 600)
+    screen = pygame.display.set_mode(screen_res)
+    pygame.display.set_caption("The amazing Breakout clone by Nibrobb (c) 2021")
+
+    sprites = pygame.sprite.Group()
+
+
+    brick = Brick(RED)
+    brick.create(GREEN)
+
+    paddle = Paddle(WHITE, 60, 20)
+    paddle.rect.x = 350
+    paddle.rect.y = 560
+
+    sprites.add(paddle)
+
+    playing = True
+
+    clock = pygame.time.Clock()
+    
+    while playing:
         # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exit()
+                playing = False             # Setter er flagg slik at vi kan hoppe ut av loopen
 
-        # Fill the screen with black so we have a "canvas" to draw on
-        screen.fill((0, 0, 0))
+        # Fyller skjermen med en heldekkende farge, klar til å tegnes på
+        screen.fill(REBECCAPURPLE)
         
+        # Linjen øverst på skjermen som viser poengsum og antall liv igjen
+        pygame.draw.line(screen, WHITE, [0, 38], [800, 38], 2)
+
+        # Render'er ovennevnte poeng og liv, ved hjelp av blit'ing
+        font = pygame.font.Font(None, 34)
+        text = font.render("Score: " + str(score), 1, WHITE)
+        screen.blit(text, (20, 10))
+        text = font.render("Lives: " + str(lives), 1, WHITE)
+        screen.blit(text, (650, 10))
         
         # Setting the tick-/framerate
-        clock.tick(30)
+        clock.tick(60)
 
-        # Draws tiles
-        for i in range(n_tiles):
-            count = 0
-            for j in range(6):
-                if j % 2 == 0:
-                    count += 1
-                pygame.draw.rect(screen, tile_colors[count-1],
-                                ((margin/num + ((tile_width + num) * i),
-                                8 + ((tile_height + 3) * j)),
-                                (tile_width, tile_height)))
+        # Draw tile
+        #pygame.draw.rect(screen, RED, ((0, 0), (60, 20)))
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         pygame.draw.rect(screen, (255, 255, 255), ((mouse_x - 30, 480 - 24), (60, 20)))
@@ -248,3 +294,4 @@ def my_code():
 
 if __name__ == '__main__':
     my_code()
+    pygame.quit()
