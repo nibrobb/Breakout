@@ -258,13 +258,14 @@ def my_code():
                 playing = False             # Setter er flagg slik at vi kan hoppe ut av loopen
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_x:
-                    playing = False
+                    playing = False         # -||-
 
+        # Flytter rekkerten med piltastene istedenfor musepekeren        
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            paddle.move_left(5)
+            paddle.move_left(10)
         if keys[pygame.K_RIGHT]:
-            paddle.move_right(5)
+            paddle.move_right(10)
 
         # Game logic
         sprites.update()
