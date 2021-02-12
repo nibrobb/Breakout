@@ -203,8 +203,8 @@ def example2():
 
 class Brick:
     """ The Brick class, a class that defines bricks """
-    tile_width = 60
-    tile_height = 20
+    brick_width  = 60
+    brick_height = 20
     def __init__(self, color):
         self.color = color
     
@@ -233,7 +233,7 @@ def my_code():
     # Setting up the game window
     screen_res = (800, 600)
     screen = pygame.display.set_mode(screen_res)
-    pygame.display.set_caption("The amazing Breakout clone by Nibrobb (c) 2021")
+    pygame.display.set_caption("The amazing Breakout clone by Robin Kristiansen (c) 2021")
 
     sprites = pygame.sprite.Group()
 
