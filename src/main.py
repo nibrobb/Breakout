@@ -27,6 +27,9 @@ function.
 """
 
 import pygame
+
+from paddle import Paddle   # Rekkerten
+
 from pygame import Vector2
 from pygame.draw import rect
 
@@ -211,20 +214,6 @@ class Brick:
     def destroy(self):
         pass # Brick is kill
 
-BLACK = (0,0,0)
-class Paddle(pygame.sprite.Sprite):
-    """ Dette er klassen for 'rekkerten' """
-
-    def __init__(self, color, width, height):
-        super().__init__()
-
-        self.image = pygame.Surface([width, height])
-        self.image.fill(BLACK)
-        self.image.set_colorkey(BLACK)
-
-        pygame.draw.rect(self.image, color, [0, 0, width, height])
-
-        self.rect = self.image.get_rect()
 
 def my_code():
     """This is a docstring"""
@@ -267,6 +256,15 @@ def my_code():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 playing = False             # Setter er flagg slik at vi kan hoppe ut av loopen
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_x:
+                    playing = False
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            paddle.move_left(5)
+        if keys[pygame.K_RIGHT]:
+            paddle.move_right(5)
 
         # Game logic
         sprites.update()
@@ -285,15 +283,17 @@ def my_code():
         text = font.render("Lives: " + str(lives), 1, WHITE)
         screen.blit(text, (650, 10))
         
+        sprites.draw(screen)        # Tegner alle sprites på skjermen
 
-        # Draw tile
-        #pygame.draw.rect(screen, RED, ((0, 0), (60, 20)))
 
+        # Denne koden styrer paddelen med musa
         mouse_x, mouse_y = pygame.mouse.get_pos()
         pygame.draw.rect(screen, (255, 255, 255), ((mouse_x - 30, 480 - 24), (60, 20)))
+        # Mens den andre koden styrer paddelen med høyre/venstre piltast
+
 
         pygame.display.flip()
-        
+
         # Setting the tickrate
         clock.tick(60)
         
