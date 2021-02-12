@@ -268,6 +268,10 @@ def my_code():
             if event.type == pygame.QUIT:
                 playing = False             # Setter er flagg slik at vi kan hoppe ut av loopen
 
+        # Game logic
+        sprites.update()
+        
+
         # Fyller skjermen med en heldekkende farge, klar til å tegnes på
         screen.fill(REBECCAPURPLE)
         
@@ -281,8 +285,6 @@ def my_code():
         text = font.render("Lives: " + str(lives), 1, WHITE)
         screen.blit(text, (650, 10))
         
-        # Setting the tick-/framerate
-        clock.tick(60)
 
         # Draw tile
         #pygame.draw.rect(screen, RED, ((0, 0), (60, 20)))
@@ -290,8 +292,11 @@ def my_code():
         mouse_x, mouse_y = pygame.mouse.get_pos()
         pygame.draw.rect(screen, (255, 255, 255), ((mouse_x - 30, 480 - 24), (60, 20)))
 
-        pygame.display.update()
-
+        pygame.display.flip()
+        
+        # Setting the tickrate
+        clock.tick(60)
+        
 if __name__ == '__main__':
     my_code()
     pygame.quit()
