@@ -27,11 +27,13 @@ function.
 """
 
 import pygame
-
-from paddle import Paddle   # Rekkerten
+import os
 
 from pygame import Vector2
 from pygame.draw import rect
+
+from paddle import Paddle   # Rekkerten
+
 
 def intersect_rectangle_circle(rec_pos, sx, sy,
                                circle_pos, circle_radius, circle_speed):
@@ -224,8 +226,9 @@ def my_code():
     RED = (255, 0, 0)
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
-    REBECCAPURPLE = (102, 51, 153)
     WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    REBECCAPURPLE = (102, 51, 153)
 
     score = 0
     lives = 3
