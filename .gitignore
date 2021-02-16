@@ -1,2 +1,3 @@
 *.pyc
 Folder/
+*/__pycache__/*
