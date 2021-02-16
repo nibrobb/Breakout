@@ -1,3 +1,3 @@
 *.pyc
-Folder/
+dist/
 */__pycache__/*
