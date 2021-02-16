@@ -3,7 +3,8 @@ import pygame
 BLACK = (0, 0, 0)
 
 class Paddle(pygame.sprite.Sprite):
-    """ Dette er klassen for 'rekkerten' """
+    """ Denne klassen kontrollerer rekkerten.
+        Rekkerten skal være av en pygame.sprite-type """
 
     def __init__(self, color, width, height):
         super().__init__()
