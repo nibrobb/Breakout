@@ -218,7 +218,7 @@ class Brick:
 def create_font(text, font_family="Arial", size=48, color=(255, 255, 255), bold=False, italic=False):
     """ Hjelper-funksjon som lager et font-objekt med tilhørende 'bounding-box' """
     font = pygame.font.SysFont(font_family, size, bold, italic)
-    text = font.render(text, True, color)
+    text = font.render(text, False, color)
     text_rect = text.get_rect()
     return text, text_rect
 
@@ -269,18 +269,19 @@ def my_code():
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             initial_open = False
-            
+        
         
         screen.fill((0,0,0))    # Velger bakgrunnsfargen
         
-        start_text, start_box = create_font("START", "Comic Sans MS", 128, REBECCAPURPLE, True, True)
+        gameover_text, gameover_box = create_font("GAME OVER", "Arial", 128, RED)
         center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
-        start_box = start_text.get_rect(center=(center_x, center_y))
+        gameover_box = gameover_text.get_rect(center=(center_x, center_y))
 
-        screen.blit(start_text, start_box)
+        screen.blit(gameover_text, gameover_box)
 
         pygame.display.flip()
         clock.tick(60)
+
 
     while playing:
         # Event handling
