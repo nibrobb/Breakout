@@ -215,6 +215,13 @@ class Brick:
     def destroy(self):
         pass # Brick is kill
 
+def create_font(text, font_family="Arial", size=48, color=(255, 255, 255), bold=False, italic=False):
+    """ Hjelper-funksjon som lager et font-objekt med tilhørende 'bounding-box' """
+    font = pygame.font.SysFont(font_family, size, bold, italic)
+    text = font.render(text, True, color)
+    text_rect = text.get_rect()
+    return text, text_rect
+
 
 def my_code():
     pygame.init()
@@ -230,16 +237,14 @@ def my_code():
     score = 0
     lives = 3
 
-    # Setting up the game window
-    screen_res = (800, 600)
+    # Stiller inn spill-vinduet
+    screen_res = (800, 600)     # Optimal oppløsning
     screen = pygame.display.set_mode(screen_res)
     pygame.display.set_caption("The amazing Breakout clone by Robin Kristiansen (c) 2021")
 
+    # Lager en ny sprite-gruppe, den skal inneholde alle sprites som tegnes på skjermen
     sprites = pygame.sprite.Group()
 
-
-    #brick = Brick(RED)
-    #brick.create(GREEN)
 
     paddle = Paddle(WHITE, 60, 20)
     paddle.rect.x = 350
@@ -251,6 +256,8 @@ def my_code():
 
     clock = pygame.time.Clock()
     
+    # `initial_open' er en variabel som tyder på om du nettopp åpnet spillet
+    # denne brukes for å lage en liten "splash screen" før selve spillet starter
     initial_open = True
 
     while initial_open:
@@ -259,17 +266,18 @@ def my_code():
                 initial_open = False
                 playing = False
 
-        # Display some sort of waiting start screen
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             initial_open = False
             
         
-        screen.fill((0,0,0))
+        screen.fill((0,0,0))    # Velger bakgrunnsfargen
         
-        font = pygame.font.Font(None, 72)
-        text = font.render("Press Space to start!", 1, WHITE)
-        screen.blit(text, (150, 300))
+        start_text, start_box = create_font("START", "Comic Sans MS", 128, REBECCAPURPLE, True, True)
+        center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
+        start_box = start_text.get_rect(center=(center_x, center_y))
+
+        screen.blit(start_text, start_box)
 
         pygame.display.flip()
         clock.tick(60)
