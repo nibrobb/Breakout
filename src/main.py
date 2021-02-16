@@ -195,7 +195,6 @@ def example_code():
 
 
 def example2():
-    """This is a docstring"""
     V1 = Vector2(300, 300)
     V2 = Vector2(100, 100)
 
@@ -218,8 +217,6 @@ class Brick:
 
 
 def my_code():
-    """This is a docstring"""
-
     pygame.init()
 
     # Defining some beatuiful colors
@@ -279,12 +276,14 @@ def my_code():
 
     while playing:
         # Event handling
+        # Den ene sjekker for om spilleren trykker på krysset i hjørnet
+        # den andre sjekker for om spilleren trøkker Q-tasten
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                playing = False             # Setter er flagg slik at vi kan hoppe ut av loopen
+                playing = False                 # Setter er flagg slik at vi kan hoppe ut av loopen
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_x:
-                    playing = False         # -||-
+                if event.key == pygame.K_q:     # Hvis Q-trykkes avsluttes spillet
+                    playing = False
 
         # Flytter rekkerten med piltastene istedenfor musepekeren        
         keys = pygame.key.get_pressed()
