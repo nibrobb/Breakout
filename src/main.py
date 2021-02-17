@@ -312,7 +312,8 @@ def my_code():
         pygame.draw.line(screen, WHITE, [0, 38], [800, 38], 2)
 
         # Render'er ovennevnte poeng og liv, ved hjelp av blit'ing
-        font = pygame.font.Font(None, 34)
+        font = pygame.font.SysFont("Arial", 24)
+
         text = font.render("Score: " + str(score), 1, WHITE)
         screen.blit(text, (20, 10))
         text = font.render("Lives: " + str(lives), 1, WHITE)
