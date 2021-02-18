@@ -19,13 +19,17 @@ class Paddle(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
     
+    # Metode for å bevege rekkerten mot venstre
     def move_left(self, pixels):
         self.rect.x -= pixels
         if self.rect.x < 0:
             self.rect.x = 0
 
+    # Metode for å bevege rekkerten mot høyre
     def move_right(self, pixels):
         self.rect.x += pixels
         # Definerer grensen på hvor langt rekkerten kan bevege seg
+        # Generell implementasjon, kan forandre størrelsen på rekkerten seinere
+        #     uten at det påvirker funksjonaliteten.
         if self.rect.x > self.screen.get_width() - self.width:
             self.rect.x = self.screen.get_width() - self.width
