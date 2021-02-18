@@ -30,9 +30,11 @@ import os
 import pygame
 
 from pygame import Vector2
-from pygame.draw import rect
+#from pygame.draw import rect
 
 from paddle import Paddle   # Rekkerten
+from brick import Brick     # Brikkene
+from ball import Ball       # Ballen
 
 # Definerer fargene som vil bli brukt i spillet
 RED = (255, 0, 0)
@@ -210,18 +212,6 @@ def example2():
 
     print(V3)
 
-class Brick:
-    """ The Brick class, a class that defines bricks """
-    brick_width  = 60
-    brick_height = 20
-    def __init__(self, color):
-        self.color = color
-    
-    def create(self, color):
-        pass
-
-    def destroy(self):
-        pass # Brick is kill
 
 def create_font(text, font_family="Arial", size=48, color=(255, 255, 255), bold=False, italic=False):
     """ Hjelper-funksjon som lager et font-objekt med tilhørende 'bounding-box' """
@@ -246,24 +236,66 @@ def my_code():
     # Lager en ny sprite-gruppe, den skal inneholde alle sprites som tegnes på skjermen
     sprites = pygame.sprite.Group()
 
-
-    paddle = Paddle(WHITE, 60, 20, screen)
+    paddle = Paddle(WHITE, 100, 20, screen)
     paddle.rect.x = 350
     paddle.rect.y = 560
 
     sprites.add(paddle)
 
+
+    ball = Ball(WHITE, 20, 20)
+    sprites.add(ball)
+
+    tiles_per_row = 8
+    tile_width = 90
+    tile_height = 20
+    margin = (screen.get_width() - tiles_per_row*tile_width) // (tiles_per_row + 1)
+    top_offset = 60
+
+    n_rows = 2
+
+    bricks = pygame.sprite.Group()
+    
+    for red_row in range(2):
+        for i in range(tiles_per_row):
+            brick = Brick(RED, tile_width, tile_height)
+            brick.rect.x = margin + i*(tile_width+margin)
+            brick.rect.y = top_offset
+            sprites.add(brick)
+            bricks.add(brick)
+        top_offset += tile_height + margin
+
+    for green_row in range(2):    
+        for i in range(tiles_per_row):
+            brick = Brick(GREEN, tile_width, tile_height)
+            brick.rect.x = margin + i*(tile_width+margin)
+            brick.rect.y = top_offset
+            sprites.add(brick)
+            bricks.add(brick)
+        top_offset += tile_height + margin
+
+    for blue_row in range(2):
+        for i in range(tiles_per_row):
+            brick = Brick(BLUE, tile_width, tile_height)
+            brick.rect.x = margin + i*(tile_width+margin)
+            brick.rect.y = top_offset
+            sprites.add(brick)
+            bricks.add(brick)    
+        top_offset += tile_height + margin
+
+
+
     playing = True
 
     clock = pygame.time.Clock()
-    
+
     # `initial_open' er en variabel som tyder på om du nettopp åpnet spillet
     # denne brukes for å lage en liten "splash screen" før selve spillet starter
     initial_open = True
 
     while initial_open:
-        for e in pygame.event.get():
-            if e.type == pygame.QUIT:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 initial_open = False
                 playing = False
 
@@ -275,7 +307,8 @@ def my_code():
         screen.fill((0,0,0))    # Velger bakgrunnsfargen
 
 
-        """ # Game over text, vertically and horizontally centered
+        """
+        # Game over text, vertically and horizontally centered
         gameover_text, gameover_box = create_font("GAME OVER", "Arial", 128, RED)
         center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
         gameover_box = gameover_text.get_rect(center=(center_x, center_y))
@@ -285,8 +318,8 @@ def my_code():
         restart_box = int((screen.get_width() - restart_text.get_width()) // 2), screen.get_height() - restart_text.get_height()
         screen.blit(restart_text, restart_box)
 
-
-        screen.blit(gameover_text, gameover_box) """
+        screen.blit(gameover_text, gameover_box)
+        """
 
         pygame.display.flip()
         clock.tick(60)
@@ -313,9 +346,19 @@ def my_code():
         # Game logic
         sprites.update()
 
+        # simpel kode for å snu retningen til ballen når den treffer en vegg
+        if ball.rect.x >= screen.get_width() - ball.width:
+            ball.velocity[0] = -ball.velocity[0]
+        if ball.rect.x <= 0:
+            ball.velocity[0] = -ball.velocity[0]
+        if ball.rect.y >= screen.get_height() - ball.height:
+            ball.velocity[1] = -ball.velocity[1]
+        if ball.rect.y <= 0:
+            ball.velocity[1] = -ball.velocity[1]
+
 
         # Fyller skjermen med en heldekkende farge, klar til å tegnes på
-        screen.fill(REBECCAPURPLE)
+        screen.fill(BLACK)
 
         # Linjen øverst på skjermen som viser poengsum og antall liv igjen
         pygame.draw.line(screen, WHITE, [0, 38], [800, 38], 2)
@@ -337,28 +380,26 @@ def my_code():
 
         pygame.display.flip()
 
-        # Setting the tickrate
+        # Setting the framerate
         clock.tick(60)
-
-    while not playing:
-        playing = game_over(screen)
-        clock.tick(60)
-        pygame.display.flip()
-    
 
 
 
 def game_over(screen):
+    """
+        docstring
+    """
     for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()                 # Setter er flagg slik at vi kan hoppe ut av loopen
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:     # Hvis Q-trykkes avsluttes spillet
-                    pygame.quit()
+        if event.type == pygame.QUIT:
+            pygame.quit()                 # Setter er flagg slik at vi kan hoppe ut av loopen
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q:     # Hvis Q-trykkes avsluttes spillet
+                pygame.quit()
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
-        return True
+        # Restart the game
+        pass
 
     # Game over text, vertically and horizontally centered
     gameover_text, gameover_box = create_font("GAME OVER", "Arial", 128, RED)
