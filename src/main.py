@@ -237,8 +237,8 @@ def my_code():
     sprites = pygame.sprite.Group()
 
     paddle = Paddle(WHITE, 100, 20, screen)
-    paddle.rect.x = 350
-    paddle.rect.y = 560
+    paddle.rect.x = (screen.get_width() - paddle.width) // 2
+    paddle.rect.y = screen.get_height() - 3 * paddle.height
 
     sprites.add(paddle)
 
@@ -252,11 +252,11 @@ def my_code():
     margin = (screen.get_width() - tiles_per_row*tile_width) // (tiles_per_row + 1)
     top_offset = 60
 
-    n_rows = 2
+    n_rows = 5
 
     bricks = pygame.sprite.Group()
     
-    for red_row in range(2):
+    for red_rows in range(n_rows):
         for i in range(tiles_per_row):
             brick = Brick(RED, tile_width, tile_height)
             brick.rect.x = margin + i*(tile_width+margin)
@@ -265,7 +265,7 @@ def my_code():
             bricks.add(brick)
         top_offset += tile_height + margin
 
-    for green_row in range(2):    
+    for green_rows in range(n_rows):
         for i in range(tiles_per_row):
             brick = Brick(GREEN, tile_width, tile_height)
             brick.rect.x = margin + i*(tile_width+margin)
@@ -274,15 +274,14 @@ def my_code():
             bricks.add(brick)
         top_offset += tile_height + margin
 
-    for blue_row in range(2):
+    for blue_rows in range(n_rows):
         for i in range(tiles_per_row):
             brick = Brick(BLUE, tile_width, tile_height)
             brick.rect.x = margin + i*(tile_width+margin)
             brick.rect.y = top_offset
             sprites.add(brick)
-            bricks.add(brick)    
+            bricks.add(brick)
         top_offset += tile_height + margin
-
 
 
     playing = True
