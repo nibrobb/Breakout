@@ -6,9 +6,11 @@ class Paddle(pygame.sprite.Sprite):
     """ Denne klassen kontrollerer rekkerten.
         Rekkerten skal være av en pygame.sprite-type """
 
-    def __init__(self, color, width, height):
+    def __init__(self, color, width, height, screen):
         super().__init__()
-
+        self.screen = screen
+        self.width = width
+        self.height = height
         self.image = pygame.Surface([width, height])
         self.image.fill(BLACK)
         self.image.set_colorkey(BLACK)
@@ -24,5 +26,6 @@ class Paddle(pygame.sprite.Sprite):
 
     def move_right(self, pixels):
         self.rect.x += pixels
-        if self.rect.x > 740:
-            self.rect.x = 740
+        # Definerer grensen på hvor langt rekkerten kan bevege seg
+        if self.rect.x > self.screen.get_width() - self.width:
+            self.rect.x = self.screen.get_width() - self.width

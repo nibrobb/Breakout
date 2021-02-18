@@ -34,6 +34,14 @@ from pygame.draw import rect
 
 from paddle import Paddle   # Rekkerten
 
+# Definerer fargene som vil bli brukt i spillet
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+REBECCAPURPLE = (102, 51, 153)
+
 
 def intersect_rectangle_circle(rec_pos, sx, sy,
                                circle_pos, circle_radius, circle_speed):
@@ -223,16 +231,9 @@ def create_font(text, font_family="Arial", size=48, color=(255, 255, 255), bold=
     return text, text_rect
 
 
+
 def my_code():
     pygame.init()
-
-    # Defining some beautiful colors
-    RED = (255, 0, 0)
-    GREEN = (0, 255, 0)
-    BLUE = (0, 0, 255)
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
-    REBECCAPURPLE = (102, 51, 153)
 
     score = 0
     lives = 3
@@ -246,7 +247,7 @@ def my_code():
     sprites = pygame.sprite.Group()
 
 
-    paddle = Paddle(WHITE, 60, 20)
+    paddle = Paddle(WHITE, 60, 20, screen)
     paddle.rect.x = 350
     paddle.rect.y = 560
 
@@ -273,11 +274,19 @@ def my_code():
 
         screen.fill((0,0,0))    # Velger bakgrunnsfargen
 
+
+        """ # Game over text, vertically and horizontally centered
         gameover_text, gameover_box = create_font("GAME OVER", "Arial", 128, RED)
         center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
         gameover_box = gameover_text.get_rect(center=(center_x, center_y))
 
-        screen.blit(gameover_text, gameover_box)
+        # Restart text, only horizontally centered, and biased to the bottom
+        restart_text, restart_box = create_font("Press SPACE to restart")
+        restart_box = int((screen.get_width() - restart_text.get_width()) // 2), screen.get_height() - restart_text.get_height()
+        screen.blit(restart_text, restart_box)
+
+
+        screen.blit(gameover_text, gameover_box) """
 
         pygame.display.flip()
         clock.tick(60)
@@ -330,6 +339,39 @@ def my_code():
 
         # Setting the tickrate
         clock.tick(60)
+
+    while not playing:
+        playing = game_over(screen)
+        clock.tick(60)
+        pygame.display.flip()
+    
+
+
+
+def game_over(screen):
+    for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()                 # Setter er flagg slik at vi kan hoppe ut av loopen
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:     # Hvis Q-trykkes avsluttes spillet
+                    pygame.quit()
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE]:
+        return True
+
+    # Game over text, vertically and horizontally centered
+    gameover_text, gameover_box = create_font("GAME OVER", "Arial", 128, RED)
+    center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
+    gameover_box = gameover_text.get_rect(center=(center_x, center_y))
+
+    # Restart text, only horizontally centered, and biased to the bottom
+    restart_text, restart_box = create_font("Press SPACE to restart")
+    restart_box = int((screen.get_width() - restart_text.get_width()) // 2), screen.get_height() - restart_text.get_height()
+    screen.blit(restart_text, restart_box)
+
+    screen.blit(gameover_text, gameover_box)
+
 
 if __name__ == '__main__':
     my_code()
