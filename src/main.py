@@ -26,8 +26,8 @@ function.
 
 """
 
-import pygame
 import os
+import pygame
 
 from pygame import Vector2
 from pygame.draw import rect
@@ -112,7 +112,7 @@ def example_code():
     pygame.init()
 
     rectangle_a_position = Vector2(320, 320)
-    rectangle_a_size_x = rectangle_a_size_y = 20
+    rectangle_a_size_x = rectangle_a_size_y = 128
 
     rectangle_b_position = Vector2(250, 250)
     rectangle_b_size_x = rectangle_b_size_y = 10
@@ -226,7 +226,7 @@ def create_font(text, font_family="Arial", size=48, color=(255, 255, 255), bold=
 def my_code():
     pygame.init()
 
-    # Defining some beatuiful colors
+    # Defining some beautiful colors
     RED = (255, 0, 0)
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
@@ -269,10 +269,10 @@ def my_code():
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             initial_open = False
-        
-        
+
+
         screen.fill((0,0,0))    # Velger bakgrunnsfargen
-        
+
         gameover_text, gameover_box = create_font("GAME OVER", "Arial", 128, RED)
         center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
         gameover_box = gameover_text.get_rect(center=(center_x, center_y))
@@ -294,7 +294,7 @@ def my_code():
                 if event.key == pygame.K_q:     # Hvis Q-trykkes avsluttes spillet
                     playing = False
 
-        # Flytter rekkerten med piltastene istedenfor musepekeren        
+        # Flytter rekkerten med piltastene istedenfor musepekeren
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             paddle.move_left(10)
@@ -303,11 +303,11 @@ def my_code():
 
         # Game logic
         sprites.update()
-        
+
 
         # Fyller skjermen med en heldekkende farge, klar til å tegnes på
         screen.fill(REBECCAPURPLE)
-        
+
         # Linjen øverst på skjermen som viser poengsum og antall liv igjen
         pygame.draw.line(screen, WHITE, [0, 38], [800, 38], 2)
 
@@ -318,22 +318,19 @@ def my_code():
         screen.blit(text, (20, 10))
         text = font.render("Lives: " + str(lives), 1, WHITE)
         screen.blit(text, (650, 10))
-        
+
         sprites.draw(screen)        # Tegner alle sprites på skjermen
 
 
         # Denne koden styrer paddelen med musa
-        #mouse_x, mouse_y = pygame.mouse.get_pos()
-        #pygame.draw.rect(screen, (255, 255, 255), ((mouse_x - 30, 480 - 24), (60, 20)))
-
-        # Mens den andre koden styrer paddelen med høyre/venstre piltast
-
+        # mouse_x, mouse_y = pygame.mouse.get_pos()
+        # pygame.draw.rect(screen, (255, 255, 255), ((mouse_x - 30, 480 - 24), (60, 20)))
 
         pygame.display.flip()
 
         # Setting the tickrate
         clock.tick(60)
-        
+
 if __name__ == '__main__':
     my_code()
     pygame.quit()
