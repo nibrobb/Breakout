@@ -32,6 +32,7 @@ import pygame
 from pygame import Vector2
 #from pygame.draw import rect
 
+from random import randint
 from paddle import Paddle   # Rekkerten
 from brick import Brick     # Brikkene
 from ball import Ball       # Ballen
@@ -246,10 +247,12 @@ def my_code():
     ball = Ball(WHITE, 20, 20)
     sprites.add(ball)
 
+
+    # Litt aritmetikk for å finne rett størrelse på mellomrommet mellom brikkene
     tiles_per_row = 8
     tile_width = 90
     tile_height = 20
-    margin = (screen.get_width() - tiles_per_row*tile_width) // (tiles_per_row + 1)
+    margin = (screen.get_width() - (tiles_per_row)*tile_width) / (tiles_per_row + 1)
     top_offset = 60
 
     n_rows = 2
@@ -301,6 +304,9 @@ def my_code():
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             initial_open = False
+            ball.rect.x = (screen.get_width() - ball.width) // 2
+            ball.rect.y = 50
+            # ball.velocity = [randint(4, 8), randint(-8, 8)]
 
 
         screen.fill((0,0,0))    # Velger bakgrunnsfargen

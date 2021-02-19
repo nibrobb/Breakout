@@ -1,5 +1,5 @@
 import pygame
-from random import randint
+
 
 BLACK = (0, 0, 0)
 
@@ -26,3 +26,7 @@ class Ball(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.velocity[0]
         self.rect.y += self.velocity[1]
+
+    def bounce(self):
+        self.velocity[0] = 1
+        self.velocity[1] = 1
