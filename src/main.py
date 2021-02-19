@@ -244,7 +244,7 @@ def my_code():
     sprites.add(paddle)
 
 
-    ball = Ball(WHITE, 20, 20)
+    ball = Ball(WHITE, 16)
     sprites.add(ball)
 
 
@@ -304,9 +304,9 @@ def my_code():
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             initial_open = False
-            ball.rect.x = (screen.get_width() - ball.width) // 2
-            ball.rect.y = 50
-            # ball.velocity = [randint(4, 8), randint(-8, 8)]
+            ball.rect.x = (screen.get_width() - 2*ball.radius) // 2
+            ball.rect.y = paddle.rect.y - ball.radius
+            ball.velocity = [randint(4, 8), randint(-8, 8)]
 
 
         screen.fill((0,0,0))    # Velger bakgrunnsfargen
@@ -357,11 +357,11 @@ def my_code():
         sprites.update()
 
         # simpel kode for å snu retningen til ballen når den treffer en vegg
-        if ball.rect.x >= screen.get_width() - ball.width:
+        if ball.rect.x >= screen.get_width() - 2*ball.radius:
             ball.velocity[0] = -ball.velocity[0]
         if ball.rect.x <= 0:
             ball.velocity[0] = -ball.velocity[0]
-        if ball.rect.y >= screen.get_height() - ball.height:
+        if ball.rect.y >= screen.get_height() - 2*ball.radius:
             ball.velocity[1] = -ball.velocity[1]
         if ball.rect.y <= 0:
             ball.velocity[1] = -ball.velocity[1]
