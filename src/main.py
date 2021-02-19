@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# -*- coding: UTF-8 -*-
 """ Pre-code for INF-1400
 
 22 January 2020 Revision 5 (Vetle Hofsøy-Woie)
@@ -352,6 +352,16 @@ def my_code():
             paddle.move_left(10)
         if keys[pygame.K_RIGHT]:
             paddle.move_right(10)
+
+        brick_list = sprites.sprites()
+        for brick in brick_list:
+            # sjekk for kollisjon
+            # print(f"{ball.velocity}")
+            intersected = intersect_rectangle_circle(Vector2(brick.rect.x, brick.rect.y), brick.rect.width, brick.rect.height, Vector2(ball.rect.x, ball.rect.y), ball.radius, Vector2(ball.velocity))
+            if intersected is not None:
+                print("Ball has hit a brick!")
+                sprites.remove(brick)
+                sprites.update()
 
         # Game logic
         sprites.update()
