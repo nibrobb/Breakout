@@ -17,7 +17,3 @@ class Brick (pygame.sprite.Sprite):
         pygame.draw.rect(self.image, color, [0, 0, width, height])
 
         self.rect = self.image.get_rect()
-
-    # Kall på denne metoden for å knuse brikken
-    def kill(self):
-        pass

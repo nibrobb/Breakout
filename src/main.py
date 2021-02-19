@@ -349,19 +349,33 @@ def my_code():
         # Flytter rekkerten med piltastene istedenfor musepekeren
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            paddle.move_left(10)
+            paddle.move_left(15)
         if keys[pygame.K_RIGHT]:
-            paddle.move_right(10)
+            paddle.move_right(15)
 
-        brick_list = sprites.sprites()
+        brick_list = bricks.sprites()
         for brick in brick_list:
-            # sjekk for kollisjon
-            # print(f"{ball.velocity}")
-            intersected = intersect_rectangle_circle(Vector2(brick.rect.x, brick.rect.y), brick.rect.width, brick.rect.height, Vector2(ball.rect.x, ball.rect.y), ball.radius, Vector2(ball.velocity))
-            if intersected is not None:
+            # Sjekk for kollisjon mellom ball og brick
+            impulse = intersect_rectangle_circle(Vector2(brick.rect.x, brick.rect.y), brick.rect.width, brick.rect.height, Vector2(ball.rect.x, ball.rect.y), ball.radius, Vector2(ball.velocity))
+            if impulse:
                 print("Ball has hit a brick!")
-                sprites.remove(brick)
-                sprites.update()
+                ball.velocity[0] = impulse.x*10
+                ball.velocity[1] = impulse.y*10
+                #bricks.remove(brick)
+                #sprites.remove(brick)
+                brick.kill()            # Denne fjerner en brick fra sprites gruppa
+                #bricks.update()        # Disse visste seg å være unødvendig
+                #sprites.update()
+                score += 1
+        
+        # Sjekk for kollisjon mellom ball og rekkert
+        impulse = intersect_rectangle_circle(Vector2(paddle.rect.x, paddle.rect.y), paddle.rect.width, paddle.rect.height, Vector2(ball.rect.x, ball.rect.y), ball.radius, Vector2(ball.velocity))
+        if impulse:
+            print("Hit the paddle!")
+            ball.velocity[0] = impulse.x*10
+            ball.velocity[1] = impulse.y*10
+        
+        
 
         # Game logic
         sprites.update()
@@ -373,8 +387,10 @@ def my_code():
             ball.velocity[0] = -ball.velocity[0]
         if ball.rect.y >= screen.get_height() - 2*ball.radius:
             ball.velocity[1] = -ball.velocity[1]
+            lives -= 1                  # Dekrementer liv med 1 ved bunn-treff
         if ball.rect.y <= 0:
             ball.velocity[1] = -ball.velocity[1]
+            # hvis du treffer taket har du vel vunnet, right? Break out?
 
 
         # Fyller skjermen med en heldekkende farge, klar til å tegnes på
