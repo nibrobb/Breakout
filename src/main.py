@@ -252,7 +252,7 @@ def my_code():
     margin = (screen.get_width() - tiles_per_row*tile_width) // (tiles_per_row + 1)
     top_offset = 60
 
-    n_rows = 5
+    n_rows = 2
 
     bricks = pygame.sprite.Group()
     
@@ -304,6 +304,11 @@ def my_code():
 
 
         screen.fill((0,0,0))    # Velger bakgrunnsfargen
+
+        start_text, start_box = create_font("Press SPACE to start!", size=72, color=WHITE)
+        sb_center_x, sb_center_y = screen.get_width() // 2, screen.get_height() //2
+        start_box = start_text.get_rect(center=(sb_center_x, sb_center_y))
+        screen.blit(start_text, start_box)
 
 
         """
