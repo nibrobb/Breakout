@@ -199,6 +199,7 @@ def game():
 
     bounce_factor = 10          # Faktor som multipliseres med normalvektoren som gjengis av kollisjonsfunksjonen
 
+    won = False
 
     while playing:
         # Event handling
@@ -251,13 +252,22 @@ def game():
                     brick.kill()            # Brick objektet som har blitt kollidert med fjernes fra alle sprite-grupper
                                             # og blir dermed fjernet fra brettet
                     score += 1              # Inkrementer score med 1 da bruker knuste en brikke
+                    if score >= 48:
+                        # Player wins
+                        ball.kill()
+                        won = True
+
             
             # Sjekk for kollisjon mellom ball og rekkert
             impulse = intersect_rectangle_circle(Vector2(paddle.rect.x, paddle.rect.y), paddle.rect.width, paddle.rect.height, Vector2(ball.rect.x, ball.rect.y), ball.radius, Vector2(ball.velocity))
             if impulse:
                 ball.velocity = [impulse.x*bounce_factor, impulse.y*bounce_factor]
         
-        
+        if won:
+            win_text, win_box = create_font("You win!")
+            win_xpos, win_ypos = screen.get_width() // 2, screen.get_height() //2
+            win_box = win_text.get_rect(center=(win_xpos, win_ypos))
+            screen.blit(win_text, win_box)
 
         sprites.update()
 
