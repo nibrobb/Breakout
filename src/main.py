@@ -26,15 +26,12 @@ function.
 
 """
 
-import os
+from random import randint
+
 import pygame
 
 from pygame import Vector2
-#from pygame.draw import rect
 
-from random import randint
-
-from pygame import key
 from paddle import Paddle   # Rekkerten
 from brick import Brick     # Brikkene
 from ball import Ball       # Ballen
@@ -45,7 +42,6 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-REBECCAPURPLE = (102, 51, 153)
 
 
 def intersect_rectangle_circle(rec_pos, sx, sy,
@@ -147,17 +143,17 @@ def game():
     paddle.rect.x = (screen.get_width() - paddle.width) // 2
     paddle.rect.y = screen.get_height() - 3 * paddle.height
 
-    sprites.add(paddle)
+    sprites.add(paddle)         # Legger rekkert-objektet inn i sprites-gruppen
 
 
-    ball = Ball(WHITE, 16)
-    sprites.add(ball)
+    ball = Ball(WHITE, 16)      # Instansierer et ball-objekt, med farge hvit og radius 16 pixler
+    sprites.add(ball)           # Legger ball-spriten inn i sprites gruppen
 
 
     # Litt aritmetikk for å finne rett størrelse på mellomrommet mellom brikkene
-    tiles_per_row = 8
     tile_width = 90
     tile_height = 20
+    tiles_per_row = 8
     margin = (screen.get_width() - (tiles_per_row)*tile_width) / (tiles_per_row + 1)
     top_offset = 60
 
@@ -165,6 +161,7 @@ def game():
 
     bricks = pygame.sprite.Group()
     
+    # For-løkker som tegner n_rows antall rader med fargede brikker
     for red_rows in range(n_rows):
         for i in range(tiles_per_row):
             brick = Brick(RED, tile_width, tile_height)
@@ -202,6 +199,7 @@ def game():
 
     bounce_factor = 10          # Faktor som multipliseres med normalvektoren som gjengis av kollisjonsfunksjonen
 
+
     while playing:
         # Event handling
         # Håndterer exit-contitions; ved et trykk på krysset i hjørnet av vinduet,
@@ -216,15 +214,22 @@ def game():
         # Fyller skjermen med en heldekkende farge, klar til å tegnes på
         screen.fill(BLACK)
 
+
+        # Introskjermen, denne teksten vises hver gang spillet starter, og forsvinner når brukeren trykker mellomrom
         if not started:
             pressed_key = pygame.key.get_pressed()
             if pressed_key[pygame.K_SPACE]:
                 started = True
+                ball.velocity = [randint(5, 10), randint(5, 10)]
 
             start_text, start_box = create_font("Press SPACE to start!", size=72, color=WHITE)
             sb_center_x, sb_center_y = screen.get_width() // 2, screen.get_height() //2
             start_box = start_text.get_rect(center=(sb_center_x, sb_center_y))
             screen.blit(start_text, start_box)
+
+            # Plasserer ballen på rekkerten slik at spilleren kan bestemme hvor hen vil starte
+            ball.rect.x = paddle.rect.x + (paddle.width / 2) - ball.radius
+            ball.rect.y = paddle.rect.y - ball.radius
 
 
         # Event-handling for bruker-input
@@ -236,38 +241,41 @@ def game():
             paddle.move_right(15)
 
         brick_list = bricks.sprites()
-        for brick in brick_list:        # Looper gjennom alle elementer i bricks-gruppen og sjekker for kollisjon
-            # Kollisjonshåndtering
-            impulse = intersect_rectangle_circle(Vector2(brick.rect.x, brick.rect.y), brick.rect.width, brick.rect.height, Vector2(ball.rect.x, ball.rect.y), ball.radius, Vector2(ball.velocity))
-            if impulse:
-                ball.velocity[0] = impulse.x*bounce_factor
-                ball.velocity[1] = impulse.y*bounce_factor
-                brick.kill()            # Brick objektet som har blitt kollidert med fjernes fra alle sprite-grupper
-                                        # og blir dermed fjernet fra brettet
-                score += 1              # Inkrementer score med 1 da bruker knuste en brikke
         
-        # Sjekk for kollisjon mellom ball og rekkert
-        impulse = intersect_rectangle_circle(Vector2(paddle.rect.x, paddle.rect.y), paddle.rect.width, paddle.rect.height, Vector2(ball.rect.x, ball.rect.y), ball.radius, Vector2(ball.velocity))
-        if impulse:
-            ball.velocity[0] = impulse.x*bounce_factor
-            ball.velocity[1] = impulse.y*bounce_factor
+        if started:
+            for brick in brick_list:        # Looper gjennom alle elementer i bricks-gruppen og sjekker for kollisjon
+                # Kollisjonshåndtering
+                impulse = intersect_rectangle_circle(Vector2(brick.rect.x, brick.rect.y), brick.rect.width, brick.rect.height, Vector2(ball.rect.x, ball.rect.y), ball.radius, Vector2(ball.velocity))
+                if impulse:
+                    ball.velocity = [impulse.x*bounce_factor, impulse.y*bounce_factor]
+                    brick.kill()            # Brick objektet som har blitt kollidert med fjernes fra alle sprite-grupper
+                                            # og blir dermed fjernet fra brettet
+                    score += 1              # Inkrementer score med 1 da bruker knuste en brikke
+            
+            # Sjekk for kollisjon mellom ball og rekkert
+            impulse = intersect_rectangle_circle(Vector2(paddle.rect.x, paddle.rect.y), paddle.rect.width, paddle.rect.height, Vector2(ball.rect.x, ball.rect.y), ball.radius, Vector2(ball.velocity))
+            if impulse:
+                ball.velocity = [impulse.x*bounce_factor, impulse.y*bounce_factor]
         
         
 
-        # Game logic
         sprites.update()
 
-        # simpel kode for å snu retningen til ballen når den treffer en vegg
-        if ball.rect.x >= screen.get_width() - 2*ball.radius:
-            ball.velocity[0] = -ball.velocity[0]
-        if ball.rect.x <= 0:
-            ball.velocity[0] = -ball.velocity[0]
-        if ball.rect.y >= screen.get_height() - 2*ball.radius:
-            ball.velocity[1] = -ball.velocity[1]
-            lives -= 1                  # Dekrementer liv med 1 ved bunn-treff
-        if ball.rect.y <= 0:
-            ball.velocity[1] = -ball.velocity[1]
-            # hvis du treffer taket har du vel vunnet, right? Break out?
+        if started:
+            # simpel kode for å snu retningen til ballen når den treffer en vegg
+            if ball.rect.x >= screen.get_width() - 2*ball.radius -2:
+                ball.velocity[0] = -ball.velocity[0]
+            if ball.rect.x <= 0:
+                ball.velocity[0] = -ball.velocity[0]
+            if ball.rect.y >= screen.get_height() - 2*ball.radius -2:
+                ball.velocity[1] = -ball.velocity[1]
+                lives -= 1                  # Dekrementer liv med 1 ved bunn-treff
+                if lives <= 0:
+                    game_over(screen, clock, score)
+                    break
+            if ball.rect.y <= 0:
+                ball.velocity[1] = -ball.velocity[1]
+            
 
 
         
@@ -297,33 +305,41 @@ def game():
 
 
 
-def game_over(screen):
+def game_over(screen, clock, score):
     """
         docstring
     """
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()                 # Setter er flagg slik at vi kan hoppe ut av loopen
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_q:     # Hvis Q-trykkes avsluttes spillet
-                pygame.quit()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()                 # Setter er flagg slik at vi kan hoppe ut av loopen
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:     # Hvis Q-trykkes avsluttes spillet
+                    pygame.quit()
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_SPACE]:
-        # Restart the game
-        pass
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            break
 
-    # Game over text, vertically and horizontally centered
-    gameover_text, gameover_box = create_font("GAME OVER", "Arial", 128, RED)
-    center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
-    gameover_box = gameover_text.get_rect(center=(center_x, center_y))
+        # Game over text, vertically and horizontally centered
+        gameover_text, gameover_box = create_font("GAME OVER", "Arial", 128, RED)
+        center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
+        gameover_box = gameover_text.get_rect(center=(center_x, center_y))
 
-    # Restart text, only horizontally centered, and biased to the bottom
-    restart_text, restart_box = create_font("Press SPACE to restart")
-    restart_box = int((screen.get_width() - restart_text.get_width()) // 2), screen.get_height() - restart_text.get_height()
-    screen.blit(restart_text, restart_box)
+        highscore_text, highscore_box = create_font("Score: " + str(score), size=80, color=BLUE)
+        hs_x, hs_y, = screen.get_width() // 2, (screen.get_height() // 2) - 100
+        highscore_box = highscore_text.get_rect(center=(hs_x, hs_y))
+        screen.blit(highscore_text, highscore_box)
 
-    screen.blit(gameover_text, gameover_box)
+        # Restart text, only horizontally centered, and biased to the bottom
+        restart_text, restart_box = create_font("Press SPACE to exit")
+        restart_box = int((screen.get_width() - restart_text.get_width()) // 2), screen.get_height() - restart_text.get_height()
+        screen.blit(restart_text, restart_box)
+
+        screen.blit(gameover_text, gameover_box)
+        clock.tick(60)
+        pygame.display.flip()
+
 
 
 if __name__ == '__main__':
